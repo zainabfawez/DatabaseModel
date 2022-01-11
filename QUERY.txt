@@ -1,0 +1,45 @@
+Query to: 
+	-Display Dynamic number of columns. 
+	-Change rows and columns. 
+	-Concatinate multi-select values in one cell.
+
+/* query starts*/
+
+SET @sql = NULL;
+
+SELECT
+  GROUP_CONCAT( DISTINCT
+    CONCAT(        
+      'GROUP_CONCAT( DISTINCT IF(spec_name = ''',
+      TABLE1.spec_name,
+      ''', spec_value, NULL)) AS ',
+      REPLACE(TABLE1.spec_name, '-', '_')
+    )
+  ) INTO @sql
+FROM 
+    (
+        SELECT s.spec_name AS spec_name
+        FROM products AS p
+        JOIN products_spec_values AS psv ON psv.product_id = p.id
+        JOIN spec_values AS sv ON sv.id = psv.spec_value_id
+        JOIN specs AS s ON s.id = sv.spec_id
+    ) AS TABLE1;
+    
+ select @sql;
+
+SET @sql = CONCAT ('SELECT p.id, product_name, brand_name, category_name, ',@sql, ' 
+    FROM products AS p
+    JOIN categories AS c ON c.id = p.category_id
+    JOIN brands AS b ON b.id = p.brand_id
+    JOIN products_spec_values AS psv ON psv.product_id = p.id
+    JOIN spec_values AS sv ON sv.id = psv.spec_value_id
+    JOIN specs AS s ON s.id = sv.spec_id
+    JOIN products_specs AS ps ON ps.product_id = p.id 
+    where p.id = 6
+    group by p.id' );
+/* query ends */
+
+/* execution */
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
