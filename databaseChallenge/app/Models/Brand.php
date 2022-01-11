@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
+    use HasFactory;
+    
     protected $table = "brands";
 
     public function products()

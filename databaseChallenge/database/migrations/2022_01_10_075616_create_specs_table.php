@@ -15,7 +15,7 @@ class CreateSpecsTable extends Migration
     {
         Schema::create('specs', function (Blueprint $table) {
             $table->id();
-            $table->string('spec_name');
+            $table->string('spec_name')->unique();
             $table->string('spec_type');
             $table->timestamps();
         });

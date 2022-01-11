@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SpecValue extends Model
-{
+{   
+    use HasFactory;
+    
     protected $table = "spec_values";
 
     public function spec()
